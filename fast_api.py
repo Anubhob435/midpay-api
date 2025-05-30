@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request, HTTPException, Depends, Header, status
 from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
@@ -25,6 +26,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Mount static files
+app.mount("/static", StaticFiles(directory="images"), name="static")
 
 # MongoDB connection
 MONGODB_URI = os.getenv('MONGODB_URI')
@@ -257,18 +261,54 @@ async def landing_page():
     <html>
         <head>
             <title>MidPay</title>
+            <link rel="icon" type="image/x-icon" href="/static/midpay-icon.ico">
             <style>
-                body { font-family: Arial, sans-serif; background: #f7f7f7; text-align: center; padding-top: 10%; }
-                h1 { color: #2d6cdf; font-size: 3em; }
-                p { font-size: 1.3em; color: #333; }
-                a { color: #2d6cdf; text-decoration: none; font-weight: bold; }
-                a:hover { text-decoration: underline; }
+                body { 
+                    font-family: Arial, sans-serif; 
+                    background: #f7f7f7; 
+                    text-align: center; 
+                    padding-top: 5%; 
+                    margin: 0;
+                }
+                .logo { 
+                    max-width: 200px; 
+                    height: auto; 
+                    margin-bottom: 20px; 
+                }
+                h1 { 
+                    color: #2d6cdf; 
+                    font-size: 3em; 
+                    margin: 20px 0; 
+                }
+                p { 
+                    font-size: 1.3em; 
+                    color: #333; 
+                    max-width: 600px; 
+                    margin: 0 auto; 
+                    line-height: 1.5; 
+                }
+                a { 
+                    color: #2d6cdf; 
+                    text-decoration: none; 
+                    font-weight: bold; 
+                }
+                a:hover { 
+                    text-decoration: underline; 
+                }
+                .container {
+                    max-width: 800px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
             </style>
         </head>
         <body>
-            <h1>MidPay</h1>
-            <p>Welcome to the MidPay API.<br>
-            For interactive API documentation, open <a href='/docs'>/docs</a>.</p>
+            <div class="container">
+                <img src="/static/midpay-logo.png" alt="MidPay Logo" class="logo">
+                <h1>MidPay</h1>
+                <p>Welcome to the MidPay API.<br>
+                For interactive API documentation, open <a href='/docs'>/docs</a>.</p>
+            </div>
         </body>
     </html>
     """
